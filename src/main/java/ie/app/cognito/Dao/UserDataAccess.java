@@ -52,16 +52,17 @@ public class UserDataAccess {
         }
         return r;
     }
+
     public Record findDOS(String username1, String username2) {
         //instantiate session variable using neo4j driver
         Record rec = null;
         try(Session session = driver.session()) {
             //Query to find shortest path between two users
             Result result = session.run("match path=shortestPath((u1:User{username:$username1})-[rel:TRUSTS_EACHOTHER*..5]-(u2:User{username:$username2})) "
-                            + "return path, length(path) as Degrees_of_Seperation, REDUCE(s=100.0,r IN range(0,size(rel)-2) | s * 0.75) as Your_Trust;"
+                            + "return length(path) as Degrees_of_Seperation, REDUCE(s=100.0,r IN range(0,size(rel)-2) | s * 0.75) as Your_Trust;"
                     , parameters("username1", username1, "username2", username2));
             if (!result.hasNext()) {
-                System.out.print("There is not path between " + username1 + " and " + username2 + "\n");
+                rec = null;
             } else{
                 //Store result in record variable
                 rec = result.next();
@@ -70,13 +71,13 @@ public class UserDataAccess {
         return rec;
     }
 
-    public void acceptedTrust(String username1, String username2){
+    public void acceptedTrust(String username1, String username2, int trust){
         try(Session session = driver.session()) {
             session.run("MATCH" +
                         "(a:User)," +
                         "(b:User)" +
                         "WHERE a.username = \'" + username1 + "\' AND b.username = \'" + username2 +"\'" +
-                        "CREATE (a)-[r:TRUSTS_EACHOTHER{trustLevel: 100}]->(b)" +
+                        "CREATE (a)-[r:TRUSTS_EACHOTHER{trustLevel: \'" + trust + "\'}]->(b)" +
                         "RETURN type(r)");
         }
     }

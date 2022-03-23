@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000/")
-@RequestMapping(value = "api/acceptrust/{username1}/{username2}", method = RequestMethod.POST)
+@RequestMapping(value = "api/acceptrust/{username1}/{username2}/{trust}", method = RequestMethod.POST)
 public class AcceptTrustRequest {
     private final UserService userService;
     private final UserSqlService uSqlService;
@@ -27,8 +27,8 @@ public class AcceptTrustRequest {
     }
     //calls the user service method to search the database for a particular user
     @GetMapping
-    public void acceptedTrust(@PathVariable("username1")String username1, @PathVariable("username2") String username2){
-        userService.acceptTrust(username1,username2);
+    public void acceptedTrust(@PathVariable("username1")String username1, @PathVariable("username2") String username2, @PathVariable("trust")int trust){
+        userService.acceptTrust(username1,username2,trust);
         uSqlService.removeNotification(username1, username2);
     }
 }

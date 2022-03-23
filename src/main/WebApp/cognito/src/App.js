@@ -11,6 +11,7 @@ import Home from './components/Home';
 import Profile from './components/Profile';
 import Messages from './components/Messages';
 import SearchResultsPage from './components/SearchResultsPage';
+import LoginButton from './components/LoginButton';
 
 
 //App will always have a header footer and div container inbetween
@@ -57,22 +58,11 @@ const App= () => {
       </Router>
   );
 }else{
-  return(
-    <Router>
-        <header className="App-header">
-        <NavigationBar/>
-        <Container>
-        <Col lg={12} style={marginTop}>
-            <div className="bg-dark text-white">
-              {/* The different navigations for going through the web application using routes */}
-              <Routes>
-              </Routes>
-              </div>
-            </Col>
-        </Container>
-        </header>
-        <Footer/>
-      </Router>
+  return(<>
+    <div class="loggedout">
+        <h1 class="lightcard">Welcome to cognito<br/><LoginButton/></h1>   
+   </div>
+   </>
   );
 }
 }

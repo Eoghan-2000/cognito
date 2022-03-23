@@ -73,8 +73,13 @@ public class UserService {
     }
 
     //get degree of seperation betweeen two users
-    public Record RequestDOS(String user1,String user2){
-        return userAccess.findDOS(user1,user2);
+    public List<String> RequestDOS(String user1,String user2){
+        List<String> res = new ArrayList<>();
+        Record r =  userAccess.findDOS(user1,user2);
+        for(Value v : r.values()){
+            res.add(v.toString());
+        }
+        return res;
     }
 
     //Get all users on the database and return as user list
@@ -106,8 +111,8 @@ public class UserService {
     }
 
     //Create connection upon accepted friend request
-    public void acceptTrust(String username1, String username2) {
-        userAccess.acceptedTrust(username1, username2);
+    public void acceptTrust(String username1, String username2, int trust) {
+        userAccess.acceptedTrust(username1, username2,trust);
     }
 
     //Remove Trust relationship in neo4j db

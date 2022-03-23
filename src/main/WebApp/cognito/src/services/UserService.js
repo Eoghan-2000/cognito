@@ -18,11 +18,11 @@ class UserService{
     }
 
     //accept trust request
-    acceptReq(user1,user2){
-        axios.post(USERS_SERVICE_API_URL + 'acceptrust/' + user1 + "/" + user2);
+    acceptReq(user1,user2,sliderval){
+        axios.post(USERS_SERVICE_API_URL + 'acceptrust/' + user1 + "/" + user2 + '/' + sliderval);
     }
     //get notifications for users
-    getNotifications(user){
+    getNotifications (user){
         return axios.get(USERS_SERVICE_API_URL + 'getnotifications/' + user);
     }
 
@@ -58,14 +58,15 @@ class UserService{
         axios.post(USERS_SERVICE_API_URL + 'makepost/' + user + "/" + post);
     }
     getDos(user1,user2){
-        return axios.get(USERS_SERVICE_API_URL + 'getDos/' + user1 + "/" + user2);
+        return axios.get(USERS_SERVICE_API_URL + 'getdos/' + user1 + "/" + user2);
     }
 
-    getMessages(current,userclicked){
-        return axios.get(USERS_SERVICE_API_URL + 'getmessages/' + current + '/' + userclicked);
+    getMessages = async (current,userclicked) => {
+        const resp = await axios.get(USERS_SERVICE_API_URL + 'getmessages/' + current + '/' + userclicked)
+        return resp;
     }
-    sendUserMessage(userFrom, userTo,Message){
-        axios.post(USERS_SERVICE_API_URL +'sendmessage/'+ userFrom + '/' + userTo + '/' + Message);
+    sendUserMessage = async (userFrom, userTo,Message) => {
+        await axios.post(USERS_SERVICE_API_URL +'sendmessage/'+ userFrom + '/' + userTo + '/' + Message);
     }
 }
 

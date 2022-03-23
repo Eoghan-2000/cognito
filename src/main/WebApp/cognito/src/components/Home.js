@@ -22,13 +22,13 @@ function Home(){
       };
     
     // sends the current user and the post that they submit
-    const makePost = e=> {
+    const makePost = e => {
         UserService.makeUserPost(currentUser.username,newPost);
-        setNewPost("");
+        setNewPost("")
+        getPosts()
     };
 
-    // gets called once
-    useEffect(() =>{
+    function getPosts(){
         UserService.getFriendsList(currentUser.username).then((response) =>{
             if(response.data){
             users.push(response.data)
@@ -37,19 +37,23 @@ function Home(){
                 //Set returned posts from database as react front end values 
                 if(response.data){
                 setListOfPosts(response.data.map((u) =>
-                <Card className="bg-dark">
+                <Card className="bg-light">
                 <Card.Body>
-                <Card.Title>{u.user}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">{Moment(u.time).format('h:mma')} {Moment(u.time).format('DD-MM-YYYY')}</Card.Subtitle>
-                <Card.Text>
+                <Card.Title class="lightcard">{u.user}</Card.Title>
+                <Card.Subtitle class="lightcard">{Moment(u.time).format('h:mma')} {Moment(u.time).format('DD-MM-YYYY')}</Card.Subtitle>
+                <Card.Text class="lightcard">
                 {u.content}
                 </Card.Text>
                 </Card.Body>
                 </Card>))
             }})
         }});
+    }
+
+    // gets called once
+    useEffect(() =>{
+        getPosts();
     },[]);
-        
         return(
             <div className="d-grid gap-2">
                 <Form>

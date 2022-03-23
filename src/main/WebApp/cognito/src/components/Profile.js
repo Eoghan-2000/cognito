@@ -16,6 +16,7 @@ function Profile (props) {
     const {user} = useAuth0();
     const currentUser = new CurrentUser(user.name);
     const [userData, setUserData] = useState([]);
+    const [dosData, setDosData] = useState([]);
     const [isAFriend, setIsFriend] = useState(false);
     const location = useLocation();
     const { search } =  location.state;
@@ -27,7 +28,8 @@ function Profile (props) {
     //Get get users on load
     useEffect(() =>{
         getUser();
-    });
+        getDOS();
+    },[]);
 
     //get users from user service and set the response to the profile data
     function getUser(){
@@ -35,6 +37,16 @@ function Profile (props) {
             setUserData(response.data)
         });
     }
+
+    function getDOS(){
+        if(search !== currentUser.username){
+        UserService.getDos(search,currentUser.username).then((response) =>{
+            console.log(response.data)
+            setDosData(response.data);
+        });
+        }
+    }
+
     //check if the users are friends
     function isFriend(user1,user2){
         return UserService.isFriend(user1,user2).then(function(result) {
@@ -109,7 +121,8 @@ function Profile (props) {
                             <ListGroupItem>Age: {user.age}</ListGroupItem>
                             <ListGroupItem>Birth Date: {user.dob}</ListGroupItem>
                             <ListGroupItem>Since {user.dateTimeJoined}{user.flagged}</ListGroupItem>
-                            <ListGroupItem id="redWarning">{(user.flagged === true) ? "USER HAS BEEN FLAGGED AND IS UNDER INVESTIGATION":""}</ListGroupItem>
+                            {user.flagged === true ? <ListGroupItem id="redWarning">USER HAS BEEN FLAGGED AND IS UNDER INVESTIGATION</ListGroupItem>: <></>}
+                            {dosData.length > 1 ? <><ListGroupItem>Degrees of Seperation: {dosData[0]}</ListGroupItem><ListGroupItem>Personal Trust: {dosData[1]}</ListGroupItem></> : <><ListGroupItem>User has no connection to you</ListGroupItem> <ListGroupItem>Personal Trust: 0</ListGroupItem></>}
                         </ListGroup></Card.Body>)}
                         <Card.Body>
                         {/* This is where the difference is between current user profile and other user profile*/}

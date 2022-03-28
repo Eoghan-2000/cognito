@@ -5,14 +5,19 @@ package ie.app.cognito.Service;
 import ie.app.cognito.Business.User;
 import ie.app.cognito.Dao.SqlRepository;
 import ie.app.cognito.Dao.UserDataAccess;
+import ie.app.cognito.Dao.UserMessageRepo;
+import ie.app.cognito.Dao.UserPostRepo;
 import ie.app.cognito.Dao.UserRepository;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
+import org.neo4j.driver.internal.shaded.io.netty.handler.codec.serialization.ObjectDecoder;
 import org.neo4j.driver.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //User service class that has all of the user related services
 @Service
@@ -26,6 +31,16 @@ public class UserService {
 
     @Autowired
     SqlRepository sRepo;
+
+    @Autowired
+    UserPostRepo uPostRepo;
+
+    @Autowired
+    UserMessageRepo uMessageRepo;
+
+    public void newUser(){
+       
+    }
 
 
     //searcg by calling DAO class to query database
@@ -58,17 +73,41 @@ public class UserService {
     //Finds spam cluster by calling DAO class to query database
     //will try improve efficiency on this
     public List<String> spamCluster(){
-        List<String> s = new ArrayList<>();
+        Set<String> set = new HashSet<String>(); 
+        List<String> firstList = new ArrayList<>();
         //takes in result as record and loops through to return usernames as a list of strings
         List<Record> r = userAccess.findSpamCluster();
         for (Record recs : r)
         {
             List<Value> values = recs.values();
             for (Value v: values) {
-                s.add(v.asString());
+                firstList.add(v.asString());
 
             }
         }
+        List<String> postSpamList = spamCluster2(firstList);
+        List<String> messageSpamList = spamCluster3(firstList);
+
+        for(String s : postSpamList){
+            set.add(s);
+        }
+        for(String s : messageSpamList){
+            set.add(s);
+        }
+        firstList = new ArrayList<>(set);
+        for(String s : firstList){
+            userAccess.flagUser(s);
+        }
+        return firstList;
+    }
+
+    private List<String> spamCluster3(List<String> s) {
+        s = uMessageRepo.getMessageSpam(s);
+        return s;
+    }
+
+    private List<String> spamCluster2(List<String> s) {
+        s = uPostRepo.getPostSpam(s);
         return s;
     }
 

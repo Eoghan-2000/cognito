@@ -10,12 +10,12 @@ const SearchResultsPage = (props) => {
     //state for users data from search result
     const [userData, setUserData] = useState([]);
     //gets called when component is loaded once
-      useEffect(() =>{
+    useEffect(() =>{
         //finds users based on search string
         UserService.searchUsers(search).then((response) =>{
             setUserData(response.data)
         });
-    });
+    },[]);
     //sets result to mapped renderable react code for search results
     if(userData){
         const listofusers = userData.map((u) =>

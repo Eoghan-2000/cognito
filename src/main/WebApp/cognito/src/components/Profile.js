@@ -29,7 +29,7 @@ function Profile (props) {
     useEffect(() =>{
         getUser();
         getDOS();
-    },[]);
+    },[search]);
 
     //get users from user service and set the response to the profile data
     function getUser(){
@@ -92,6 +92,7 @@ function Profile (props) {
                 {/* Send in blank user 2 so that it shows all of the current users friend instead of degree of seperation*/}
                 <div class="float-child">
                     <div class="blue">
+                        <h2>Friends Map</h2>
                         <AllUserConnections
                         width={400}
                         height={'80vh'}
@@ -143,6 +144,7 @@ function Profile (props) {
                     {/* send in two users this time to get degree of seperation */}
                     <div class="float-child">
                         <div class="blue">
+                        <h2>Seperation Map</h2>
                             <AllUserConnections
                             width={400}
                             height={'80vh'}

@@ -21,6 +21,10 @@ import javax.persistence.*;
         this.Content = content;
         this.Time = LocalDateTime.now();
     }
+
+    public interface UserName {
+        String getUser();
+    }
     public UserPosts(){}
 
     public Long getId() {

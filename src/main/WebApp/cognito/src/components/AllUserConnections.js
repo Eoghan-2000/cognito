@@ -33,7 +33,8 @@ const AllUserConnections = (props) => {
       server_password: neo4jPassword,
       labels: {
         User: {
-          caption: true
+          caption: "username"
+          
         },
       },
       relationships: {
@@ -55,7 +56,7 @@ const AllUserConnections = (props) => {
       server_password: neo4jPassword,
       labels: {
         User: {
-          caption: true
+          caption: "username"
         },
       },
       relationships: {

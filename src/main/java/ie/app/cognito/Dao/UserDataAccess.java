@@ -109,7 +109,7 @@ public class UserDataAccess {
             //Call the get users with local clustering coefficient equal to 1 and return the username of these
             Result result = session.run("CALL gds.localClusteringCoefficient.stream('spam')\n"
                     + "YIELD nodeId, localClusteringCoefficient\n"
-                    + "WHERE localClusteringCoefficient = 1.0\n"
+                    + "WHERE localClusteringCoefficient >= 0.75\n"
                     + "RETURN gds.util.asNode(nodeId).username AS name;");
             //Adds all of these results to record variable
             if (result.hasNext()) {
@@ -145,6 +145,12 @@ public class UserDataAccess {
                     + "YIELD nodeId, localClusteringCoefficient\n"
                     + "WHERE localClusteringCoefficient = 1.0\n"
                     + "Set gds.util.asNode(nodeId).flagged = true;");
+        }
+    }
+
+    public void flagUser(String username){
+        try(Session session = driver.session()) {
+            session.run("Match (U:User {username:\"" + username + "\"}) Set U.flagged = true;");
         }
     }
 

@@ -5,6 +5,8 @@ import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.springframework.web.bind.annotation.RestController;
 
+import ie.app.cognito.Business.User;
+
 import java.util.*;
 
 import static org.neo4j.driver.Values.parameters;
@@ -58,7 +60,7 @@ public class UserDataAccess {
         Record rec = null;
         try(Session session = driver.session()) {
             //Query to find shortest path between two users
-            Result result = session.run("match path=shortestPath((u1:User{username:$username1})-[rel:TRUSTS_EACHOTHER*..5]-(u2:User{username:$username2})) "
+            Result result = session.run("match path=shortestPath((u1:User{username:$username1})-[rel*..5]-(u2:User{username:$username2})) "
                             + "return length(path) as Degrees_of_Seperation, REDUCE(s=100.0,r IN range(0,size(rel)-2) | s * 0.75) as Your_Trust;"
                     , parameters("username1", username1, "username2", username2));
             if (!result.hasNext()) {
@@ -71,20 +73,20 @@ public class UserDataAccess {
         return rec;
     }
 
-    public void acceptedTrust(String username1, String username2, int trust){
+    public void acceptedTrust(String username1, String username2, int trust, String type){
         try(Session session = driver.session()) {
             session.run("MATCH" +
                         "(a:User)," +
                         "(b:User)" +
                         "WHERE a.username = \'" + username1 + "\' AND b.username = \'" + username2 +"\'" +
-                        "CREATE (a)-[r:TRUSTS_EACHOTHER{trustLevel: \'" + trust + "\'}]->(b)" +
+                        "CREATE (a)-[r:" +type+"{trustLevel: \'" + trust + "\'}]->(b)" +
                         "RETURN type(r)");
         }
     }
     public void removeTrust(String username1, String username2){
         try(Session session = driver.session()){
             session.run("MATCH" +
-            "(U:User {username: \'" + username1 + "\'})-[r:TRUSTS_EACHOTHER]-(U2:User {username: \'" + username2 + "\'})" +
+            "(U:User {username: \'" + username1 + "\'})-[r]-(U2:User {username: \'" + username2 + "\'})" +
             "Delete r");
         }
     }
@@ -104,7 +106,7 @@ public class UserDataAccess {
             session.run("CALL gds.graph.create.cypher("
                     + "  'spam',"
                     + "  'MATCH (n:User) where n.dateTimeJoined = date.realtime() RETURN id(n) AS id',"
-                    + "  'MATCH (n:User)-[r:TRUSTS_EACHOTHER]-(m:User) RETURN id(n) AS source, id(m) AS target' "
+                    + "  'MATCH (n:User)-[r]-(m:User) RETURN id(n) AS source, id(m) AS target' "
                     + ");");
             //Call the get users with local clustering coefficient equal to 1 and return the username of these
             Result result = session.run("CALL gds.localClusteringCoefficient.stream('spam')\n"
@@ -137,7 +139,7 @@ public class UserDataAccess {
             session.run("CALL gds.graph.create.cypher("
                     + "  'spamFriend',"
                     + "  'MATCH (n:User{username:\""+ username + "\"})-[r:TRUSTS_EACHOTHER]-(m:User) RETURN id(m) AS id',"
-                    + "  'MATCH (n:User)-[r:TRUSTS_EACHOTHER]-(m:User) RETURN id(n) AS source, id(m) AS target', "
+                    + "  'MATCH (n:User)-[r]-(m:User) RETURN id(n) AS source, id(m) AS target', "
                     + " {validateRelationships : false} "
                     + ");");
             //Call the get users with local clustering coefficient equal to 1 and return the username of these
@@ -163,7 +165,7 @@ public class UserDataAccess {
     public Record isFriend(String user1, String user2) {
         Record res;
         try (Session session = driver.session()) {
-            Result r = session.run("RETURN EXISTS( (:User {username:\"" + user1 + "\"})-[:TRUSTS_EACHOTHER]-(:User {username:\""+user2+"\"}) )");
+            Result r = session.run("RETURN EXISTS( (:User {username:\"" + user1 + "\"})-[]-(:User {username:\""+user2+"\"}))");
             res = r.next();
             }
         return res;
@@ -173,12 +175,15 @@ public class UserDataAccess {
         List<Record> r = new ArrayList<>();
         try(Session session = driver.session()) {
             //Query to return all users
-            Result result = session.run("Match (U:User)-[:TRUSTS_EACHOTHER]-(U2:User) where U.username = \"" + user + "\" return U2;");
+            Result result = session.run("Match (U:User)-[r]-(U2:User) where U.username = \"" + user + "\" return U2;");
             //Put all records in record list
             while (result.hasNext()) {
                 r.add(result.next());
             }
         }
         return r;
+    }
+
+    public void newUser(User user) {
     }
 }

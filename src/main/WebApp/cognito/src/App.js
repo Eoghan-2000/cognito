@@ -57,7 +57,9 @@ const App= () => {
 }else{
   return(<>
     <div class="loggedout">
-        <h1 class="lightcard">Welcome to cognito<br/><LoginButton/></h1>   
+      <img class="navicon" src="AppLogo.png" width="100" height="100" alt="brand"/>
+        <h1 class="whiteWriting">Welcome to cognito<br/></h1>   
+        <LoginButton/>
    </div>
    </>
   );

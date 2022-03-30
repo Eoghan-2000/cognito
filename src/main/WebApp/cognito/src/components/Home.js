@@ -53,7 +53,8 @@ function Home(){
     // gets called once
     useEffect(() =>{
         getPosts();
-    },[]);
+    },[listOfPosts]);
+    
         return(
             <div className="d-grid gap-2">
                 <Form>

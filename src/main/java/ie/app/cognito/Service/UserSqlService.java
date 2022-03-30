@@ -30,7 +30,7 @@ public class UserSqlService {
     
     //Send Trust Request to sql db
     public void sendTrust(String username1, String username2) {
-        notifcationRepo.save(new UserNotifications(username1,username2));
+        notifcationRepo.save(new UserNotifications(username1,username2,"pending"));
     }
 
     //Remove notification in sql db
@@ -55,5 +55,9 @@ public class UserSqlService {
     //check message repo for two possible ids to get message
     public List<UserMessages> getMessages(String user1,String user2) {
         return messageRepo.gMessages(user1,user2);
+    }
+
+    public void declineNotification(String username1, String username2) {
+        notifcationRepo.declineNotification(username1, username2);
     }
 }

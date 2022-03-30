@@ -21,6 +21,10 @@ class UserService{
     acceptReq(user1,user2,sliderval){
         axios.post(USERS_SERVICE_API_URL + 'acceptrust/' + user1 + "/" + user2 + '/' + sliderval);
     }
+
+    declineReq(user1,user2){
+        axios.post(USERS_SERVICE_API_URL + 'denyreq/' + user1 + '/' + user2);
+    }
     //get notifications for users
     getNotifications (user){
         return axios.get(USERS_SERVICE_API_URL + 'getnotifications/' + user);

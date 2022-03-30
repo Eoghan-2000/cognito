@@ -3,6 +3,7 @@ package ie.app.cognito.Service;
 
 //Imports
 import ie.app.cognito.Business.User;
+import ie.app.cognito.Business.UserNotifications;
 import ie.app.cognito.Dao.SqlRepository;
 import ie.app.cognito.Dao.UserDataAccess;
 import ie.app.cognito.Dao.UserMessageRepo;
@@ -10,10 +11,11 @@ import ie.app.cognito.Dao.UserPostRepo;
 import ie.app.cognito.Dao.UserRepository;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
-import org.neo4j.driver.internal.shaded.io.netty.handler.codec.serialization.ObjectDecoder;
 import org.neo4j.driver.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,10 +38,10 @@ public class UserService {
     UserPostRepo uPostRepo;
 
     @Autowired
-    UserMessageRepo uMessageRepo;
+    SqlRepository uNotifications;
 
-    public void newUser(){
-       
+    public void newUser(String username, String email){
+       uRepo.save(new User(username, "firstname", "lastname", LocalDate.now(), null, "location", email, false));
     }
 
 
@@ -102,7 +104,7 @@ public class UserService {
     }
 
     private List<String> spamCluster3(List<String> s) {
-        s = uMessageRepo.getMessageSpam(s);
+        s = uNotifications.getSusNotifications(s);
         return s;
     }
 
@@ -150,8 +152,8 @@ public class UserService {
     }
 
     //Create connection upon accepted friend request
-    public void acceptTrust(String username1, String username2, int trust) {
-        userAccess.acceptedTrust(username1, username2,trust);
+    public void acceptTrust(String username1, String username2, int trust, String type) {
+        userAccess.acceptedTrust(username1, username2,trust,type);
     }
 
     //Remove Trust relationship in neo4j db

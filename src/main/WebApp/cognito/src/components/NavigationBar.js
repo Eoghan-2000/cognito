@@ -15,6 +15,7 @@ const NavigationBar = () =>{
   const {isAuthenticated,user} = useAuth0();
   const [value, setValue] = useState("");
   const [slider, setSlider] = useState(100);
+  const [trustType, setTrustType] = useState("TRUSTS_EACHOTER")
 
   // const currentUser = new CurrentUser(user.name);
   const [userNotifications, setUserNotifications] = useState([]);
@@ -26,9 +27,14 @@ const NavigationBar = () =>{
   };
 
   //return a function for each button on notification
-  function getAcceptRequest(username,n,sliderval){
+  function getAcceptRequest(username,n,sliderval,type){
     return function(){
-      UserService.acceptReq(username, n,sliderval);
+      UserService.acceptReq(username, n,(sliderval+'/'+type));
+    }
+  }
+  function denyRequest(username,n){
+    return function(){
+      UserService.declineReq(username, n);
     }
   }
   //Get notifications for a specific user
@@ -77,10 +83,14 @@ const NavigationBar = () =>{
             <Dropdown id="range">
               <Dropdown.Toggle id="dropdown-autoclose-true">Accept</Dropdown.Toggle>
               <Dropdown.Menu>
+              Trust Type:
+              <input type="text" id="trusttype" name="trusttype" value={trustType} onChange={(event) => setTrustType(event.target.value)}></input>
                 Trust Level:
-                <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input><Button onClick={getAcceptRequest(currentUser.username,n.user2,slider)}>Confirm</Button>
+                <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input>
+                <Button onClick={getAcceptRequest(currentUser.username,n.user2,slider)}>Confirm</Button>
               </Dropdown.Menu>
             </Dropdown>
+            <Button onClick={denyRequest(currentUser.username,n.user2)}>Decline</Button>
             {/* <Button onClick={getAcceptRequest(currentUser.username,n.user2)}>Accept</Button> */}
             </div>
           )}
@@ -118,16 +128,19 @@ const NavigationBar = () =>{
           <Dropdown.Menu>
             {/* get notifications for users */}
           {userNotifications.map((n) =>
-            <div>
+            <div class='requests'>
             {n.user2}
             <Dropdown id="range">
               <Dropdown.Toggle id="dropdown-autoclose-true">Accept</Dropdown.Toggle>
               <Dropdown.Menu>
+              Trust Type:
+              <input type="text" id="trusttype" name="trusttype" value={trustType} onChange={(event) => setTrustType(event.target.value)}></input>
               Trust Level:
-              <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input><Button onClick={getAcceptRequest(currentUser.username,n.user2,slider)}>Confirm</Button>
+              <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input>
+              <Button onClick={getAcceptRequest(currentUser.username,n.user2,slider,trustType)}>Confirm</Button>
+              <Button onClick={denyRequest(currentUser.username,n.user2)}>Decline</Button>
               </Dropdown.Menu>
             </Dropdown>
-            {/* <Button onClick={getAcceptRequest(currentUser.username,n.user2)}>Accept</Button> */}
             </div>
           )}
           </Dropdown.Menu>

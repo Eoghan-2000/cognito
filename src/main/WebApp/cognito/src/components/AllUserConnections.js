@@ -39,11 +39,11 @@ const AllUserConnections = (props) => {
       },
       relationships: {
         "TRUSTS_EACHOTHER": {
-          caption: false
+          caption: true
       }
       },//cypher query for all friends of current user 
       initial_cypher:
-        "MATCH (u:User {username:\""+ username1 +"\"})-[rel:TRUSTS_EACHOTHER]-(u2:User) RETURN *",
+        "MATCH (u:User {username:\""+ username1 +"\"})-[rel]-(u2:User) RETURN *",
     };
     const vis = new Neovis(config);
     vis.render();
@@ -61,11 +61,11 @@ const AllUserConnections = (props) => {
       },
       relationships: {
         "TRUSTS_EACHOTHER": {
-          caption: false
+          caption: true
       }
       },//cypher query for degree of seperation in neo4j 
       initial_cypher:
-      "match path=shortestPath((u1:User{username:\""+username1+"\"})-[rel:TRUSTS_EACHOTHER*..5]-(u2:User{username:\""+username2+"\"})) "
+      "match path=shortestPath((u1:User{username:\""+username1+"\"})-[rel*..5]-(u2:User{username:\""+username2+"\"})) "
       + "return path",
     };
     const vis = new Neovis(config);

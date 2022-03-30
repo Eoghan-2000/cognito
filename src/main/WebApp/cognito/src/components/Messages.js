@@ -34,7 +34,7 @@ function Messages(){
             </Nav.Item>)
             )
         }});
-    },[]);
+    },[messages]);
     return(
         <div className="d-grid gap-2">
             <div class="text-center"><h2>Messages</h2></div>

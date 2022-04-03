@@ -32,7 +32,7 @@ public class User {
     private Boolean flagged;
     @Transient
     private int age;
-    @Relationship(type = "TRUSTS_EACHOTHER")
+    @Relationship
     private List<User> trusts = new ArrayList<>();
 
     public User(String username, String firstname, String surname, LocalDate dateTimeJoined, LocalDate dob, String location, String email, Boolean flagged, List<User> trusts) {

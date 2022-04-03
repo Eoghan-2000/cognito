@@ -1,7 +1,6 @@
 package ie.app.cognito.Dao;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
 
 import ie.app.cognito.Business.UserPosts;

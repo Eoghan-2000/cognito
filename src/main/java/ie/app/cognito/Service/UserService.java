@@ -3,10 +3,8 @@ package ie.app.cognito.Service;
 
 //Imports
 import ie.app.cognito.Business.User;
-import ie.app.cognito.Business.UserNotifications;
 import ie.app.cognito.Dao.SqlRepository;
 import ie.app.cognito.Dao.UserDataAccess;
-import ie.app.cognito.Dao.UserMessageRepo;
 import ie.app.cognito.Dao.UserPostRepo;
 import ie.app.cognito.Dao.UserRepository;
 import org.neo4j.driver.Record;
@@ -102,14 +100,13 @@ public class UserService {
         }
         return firstList;
     }
-
-    private List<String> spamCluster3(List<String> s) {
-        s = uNotifications.getSusNotifications(s);
+    private List<String> spamCluster2(List<String> s) {
+        s = uPostRepo.getPostSpam(s);
         return s;
     }
 
-    private List<String> spamCluster2(List<String> s) {
-        s = uPostRepo.getPostSpam(s);
+    private List<String> spamCluster3(List<String> s) {
+        s = uNotifications.getSusNotifications(s);
         return s;
     }
 

@@ -145,7 +145,7 @@ public class UserDataAccess {
             //Call the get users with local clustering coefficient equal to 1 and return the username of these
             session.run("CALL gds.localClusteringCoefficient.stream('spamFriend')\n"
                     + "YIELD nodeId, localClusteringCoefficient\n"
-                    + "WHERE localClusteringCoefficient = 1.0\n"
+                    + "WHERE localClusteringCoefficient >= 0.75\n"
                     + "Set gds.util.asNode(nodeId).flagged = true;");
         }
     }

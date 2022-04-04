@@ -10,6 +10,7 @@ import ie.app.cognito.Dao.UserPostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,5 +60,8 @@ public class UserSqlService {
 
     public void declineNotification(String username1, String username2) {
         notifcationRepo.declineNotification(username1, username2);
+    }
+
+    public void editProfile(String user, String newuser) {
     }
 }

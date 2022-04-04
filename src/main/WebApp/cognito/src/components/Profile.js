@@ -2,11 +2,17 @@ import { useAuth0 } from '@auth0/auth0-react';
 import {ButtonGroup,Button,Card,ListGroup,ListGroupItem} from 'react-bootstrap';
 import UserService from '../services/UserService';
 import React, { useState, useEffect } from 'react';
+import {useNavigate} from 'react-router-dom';
 import {AllUserConnections } from './AllUserConnections';
 import {useLocation} from 'react-router-dom';
 import {CurrentUser} from '../business/CurrentUser';
 
 function Profile (props) {
+    let navigate = useNavigate(); 
+    const routeChange = () =>{ 
+    let path = `/editProfile`; 
+    navigate(path);
+    }
     //neo4j login details
     const NEO4J_URI = "bolt://localhost:7687";
     const NEO4J_USER = "neo4j";
@@ -33,9 +39,15 @@ function Profile (props) {
 
     //get users from user service and set the response to the profile data
     function getUser(){
+        if(search.includes("@")){
+            UserService.searchUserbyEmail(search).then((response) => {
+                setUserData(response.data)
+            })
+        }else{
         UserService.searchUsers(search).then((response) =>{
             setUserData(response.data)
         });
+        }
     }
 
     function getDOS(){
@@ -84,7 +96,9 @@ function Profile (props) {
                     </ListGroup></Card.Body>)}
                     <Card.Body>
                         {/* This is where the difference is between current user profile and other user profile*/}
-                        <Button>Edit Profile</Button>
+                        <Button color="primary" className="px-4"
+                        onClick={routeChange}
+                        >Edit Profile</Button>
                     </Card.Body>
                     <br/>
                 </Card></div>

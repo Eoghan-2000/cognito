@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ie.app.cognito.Business.User;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.neo4j.driver.Values.parameters;
@@ -184,6 +185,19 @@ public class UserDataAccess {
         return r;
     }
 
-    public void newUser(User user) {
+    public void editProfile(String user, String newuser, String newFirstName, String newSurname, String location, LocalDate dob) {
+        try(Session session = driver.session()){
+            session.run("Match (U:User{username: \'" +user+"\'}) set U.username=\'"+ newuser+ "\', U.firstname=\'" + newFirstName + "\', U.surname=\'" + newSurname + "\', U.location=\'" + location + "\', U.dob=date(\'" +dob+"\')");
+        }
+    }
+
+    public Record getByEmail(String email) {
+        Record rec;
+        try(Session session = driver.session()){
+            Result res = session.run("Match (U:User{email: \'" + email + "\'}) return U");
+            rec = res.next();
+            
+        }
+        return rec;
     }
 }

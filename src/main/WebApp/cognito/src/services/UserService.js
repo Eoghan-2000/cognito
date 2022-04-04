@@ -34,6 +34,9 @@ class UserService{
     searchUsers(searchString){
         return axios.get(USERS_SERVICE_API_URL + 'searchUser/' +searchString);
     }
+    searchUserbyEmail(email){
+        return axios.get(USERS_SERVICE_API_URL + 'searchUserEmail/' +email);
+    }
     //call to api using axios to get spam clusters
     getSpamCluster(){
         return axios.get(USERS_SERVICE_API_URL + 'spamAccounts')
@@ -71,6 +74,9 @@ class UserService{
     }
     sendUserMessage = async (userFrom, userTo,Message) => {
         await axios.post(USERS_SERVICE_API_URL +'sendmessage/'+ userFrom + '/' + userTo + '/' + Message);
+    }
+    editProfile(currentUser, username,firstname,surname,location,dob){
+        axios.post(USERS_SERVICE_API_URL + 'editprofile' + '/' + currentUser + '/' + username + '/' + firstname + '/' + surname + '/' + location + '/' + dob);
     }
 }
 

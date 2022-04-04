@@ -179,4 +179,28 @@ public class UserService {
     }
         return users;
     }
+
+
+    public void editProfile(String user, String newuser, String newFirstName, String newSurname, String location, LocalDate dob) {
+        userAccess.editProfile(user,newuser,newFirstName, newSurname,location,dob);
+    }
+
+
+    public User userSearchbyEmail(String email) {
+        Record rec = userAccess.getByEmail(email);
+        User u = null;
+        List<Pair<String, Value>> values = rec.fields();
+            for (Pair<String,Value> nameValue: values) {
+                Value value = nameValue.value();
+                u =(new User(value.get("username").asString(),
+                        value.get("firstname").asString(),
+                        value.get("surname").asString(),
+                        value.get("dateTimeJoined").asLocalDate(),
+                        value.get("dob").asLocalDate(),
+                        value.get("location").asString(),
+                        value.get("email").asString(),
+                        value.get("flagged").asBoolean()));
+        }
+        return u;
+    }
 }

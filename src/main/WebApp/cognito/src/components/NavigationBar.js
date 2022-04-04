@@ -19,7 +19,7 @@ const NavigationBar = () =>{
 
   // const currentUser = new CurrentUser(user.name);
   const [userNotifications, setUserNotifications] = useState([]);
-  const currentUser = new CurrentUser({isAuthenticated} ? user.name : "");
+  const [userDetails, setUserDetails] = useState([]);
   
   //Update value everytime user types to enable search
   const handleChange = e => {
@@ -44,8 +44,14 @@ const NavigationBar = () =>{
     });
   }
 
+  function getCurrentUser(){
+    UserService.searchUserbyEmail(user.name).then((response) =>{
+      setUserDetails(response.data)
+      getnotification(response.data.username)
+    });
+  }
   useEffect(()=> {
-    getnotification(currentUser.username);
+    getCurrentUser()
   },[]);
   //if users is logged in
   if(isAuthenticated){
@@ -70,7 +76,7 @@ const NavigationBar = () =>{
         </Form>
       <Nav>
         {/* Nav bar link to users profile */}
-        <Link to={"/profile"} state={{ search: currentUser.username}}className='navbar-brand'>{currentUser.username}</Link>
+        <Link to={"/profile"} state={{ search: userDetails.username}}className='navbar-brand'>{userDetails.username}</Link>
         <Dropdown id="notification">
           <Dropdown.Toggle id="dropdown-autoclose-true">
           <i className="fa fa-bell"></i>
@@ -83,14 +89,14 @@ const NavigationBar = () =>{
             <Dropdown id="range">
               <Dropdown.Toggle id="dropdown-autoclose-true">Accept</Dropdown.Toggle>
               <Dropdown.Menu>
-              Trust Type:
+              Relationship Type:
               <input type="text" id="trusttype" name="trusttype" value={trustType} onChange={(event) => setTrustType(event.target.value)}></input>
                 Trust Level:
                 <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input>
-                <Button onClick={getAcceptRequest(currentUser.username,n.user2,slider)}>Confirm</Button>
+                <Button onClick={getAcceptRequest(userDetails.username,n.user2,slider)}>Confirm</Button>
               </Dropdown.Menu>
             </Dropdown>
-            <Button onClick={denyRequest(currentUser.username,n.user2)}>Decline</Button>
+            <Button onClick={denyRequest(userDetails.username,n.user2)}>Decline</Button>
             {/* <Button onClick={getAcceptRequest(currentUser.username,n.user2)}>Accept</Button> */}
             </div>
           )}
@@ -120,7 +126,7 @@ const NavigationBar = () =>{
         </Form>
       <Nav>
         {/* Nav bar link to users profile */}
-        <Link to={"/profile"} state={{ search: currentUser.username}}className='navbar-brand'>{currentUser.username}</Link>
+        <Link to={"/profile"} state={{ search: userDetails.username}}className='navbar-brand'>{userDetails.username}</Link>
         <Dropdown id="notification">
           <Dropdown.Toggle id="dropdown-autoclose-true">
           <i class="fa fa-bell"></i>
@@ -133,13 +139,13 @@ const NavigationBar = () =>{
             <Dropdown id="range">
               <Dropdown.Toggle id="dropdown-autoclose-true">Accept</Dropdown.Toggle>
               <Dropdown.Menu>
-              Trust Type:
+              Relationship Type:
               <input type="text" id="trusttype" name="trusttype" value={trustType} onChange={(event) => setTrustType(event.target.value)}></input>
               Trust Level:
               <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input>
-              <Button onClick={getAcceptRequest(currentUser.username,n.user2,slider,trustType)}>Confirm</Button>
-              <Button onClick={denyRequest(currentUser.username,n.user2)}>Decline</Button>
+              <Button onClick={getAcceptRequest(userDetails.username,n.user2,slider,trustType)}>Confirm</Button>
               </Dropdown.Menu>
+              <Button onClick={denyRequest(userDetails.username,n.user2)}>Decline</Button>
             </Dropdown>
             </div>
           )}

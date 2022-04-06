@@ -8,13 +8,13 @@ import Moment from 'moment';
 function Home(){
     //Declare user from auth0
     const {user} = useAuth0();
-    const currentUser = new CurrentUser(user.name);
     const users = [] 
     Moment.locale('en');
 
     //useStates to allow for finding users friends, posts, list of posts in rendered format and new posts by the user
     const[newPost,setNewPost]= useState("");
     const[listOfPosts,setListOfPosts] = useState([]);
+    const[userDetails,setUserDetails] = useState([]);
 
     //When the user types in the text box the value is changed to their input
     const handleChange = e => {
@@ -23,16 +23,16 @@ function Home(){
     
     // sends the current user and the post that they submit
     const makePost = e => {
-        UserService.makeUserPost(currentUser.username,newPost);
+        UserService.makeUserPost(userDetails.username,newPost)
         setNewPost("")
-        getPosts()
+        getCurrentUser()
     };
 
-    function getPosts(){
-        UserService.getFriendsList(currentUser.username).then((response) =>{
+    function getPosts(current){
+        UserService.getFriendsList(current.username).then((response) =>{
             if(response.data){
             users.push(response.data)
-            users.push(currentUser.username)
+            users.push(current.username)
             UserService.getPosts.apply(null, users).then((response) =>{
                 //Set returned posts from database as react front end values 
                 if(response.data){
@@ -49,11 +49,16 @@ function Home(){
             }})
         }});
     }
-
+    function getCurrentUser(){
+        UserService.searchUserbyEmail(user.name).then((response) =>{
+          setUserDetails(response.data)
+          getPosts(response.data)
+        });
+      }
     // gets called once
     useEffect(() =>{
-        getPosts();
-    },[listOfPosts]);
+        getCurrentUser()
+    },[]);
     
         return(
             <div className="d-grid gap-2">

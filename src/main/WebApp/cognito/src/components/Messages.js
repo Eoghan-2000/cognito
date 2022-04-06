@@ -13,19 +13,24 @@ function Messages(){
     //useStates to allow for finding users friends, posts, list of posts in rendered format and new posts by the user
     const[messages,setMessages] = useState([]);
     const[listOfFriends,setListOfFriends] = useState([]);
+    const[userDetails,setUserDetails]= useState([]);
 
 
     
 
     function setUserMessages(userClicked){
         return function(){
-            setMessages(<MessageUser userClicked={userClicked} currentUser={currentUser.username}/>)
+            setMessages(<MessageUser userClicked={userClicked} currentUser={userDetails.username}/>)
         }
     }
-
-    // gets called if list of friends changes
-    useEffect(() =>{
-        UserService.getFriendsList(currentUser.username).then((response) =>{
+    function getCurrentUser(){
+        UserService.searchUserbyEmail(user.name).then((response) =>{
+          setUserDetails(response.data)
+          getFriendsList(response.data)
+        });
+      }
+    function getFriendsList(current){
+        UserService.getFriendsList(current.username).then((response) =>{
             if(response.data){
             //Set returned posts from database as react front end values 
             setListOfFriends(response.data.map((u) =>
@@ -34,6 +39,11 @@ function Messages(){
             </Nav.Item>)
             )
         }});
+    }
+
+    // gets called if list of friends changes
+    useEffect(() =>{
+        getCurrentUser()
     },[messages]);
     return(
         <div className="d-grid gap-2">

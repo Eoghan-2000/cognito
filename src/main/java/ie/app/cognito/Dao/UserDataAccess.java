@@ -5,8 +5,6 @@ import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.springframework.web.bind.annotation.RestController;
 
-import ie.app.cognito.Business.User;
-
 import java.time.LocalDate;
 import java.util.*;
 
@@ -74,6 +72,7 @@ public class UserDataAccess {
         return rec;
     }
 
+    //create relationship after request accepted
     public void acceptedTrust(String username1, String username2, int trust, String type){
         try(Session session = driver.session()) {
             session.run("MATCH" +
@@ -84,8 +83,11 @@ public class UserDataAccess {
                         "RETURN type(r)");
         }
     }
+
+    //remove relationship method
     public void removeTrust(String username1, String username2){
         try(Session session = driver.session()){
+            //match relationship between two users and if present delete it
             session.run("MATCH" +
             "(U:User {username: \'" + username1 + "\'})-[r]-(U2:User {username: \'" + username2 + "\'})" +
             "Delete r");
@@ -151,18 +153,21 @@ public class UserDataAccess {
         }
     }
 
+    //flags user given their username
     public void flagUser(String username){
         try(Session session = driver.session()) {
             session.run("Match (U:User {username:\"" + username + "\"}) Set U.flagged = true;");
         }
     }
 
+    //unflags user given their username
     public void unflagUser(String username) {
         try (Session session = driver.session()) {
         session.run("Match (U:User {username:\"" + username + "\"}) Set U.flagged = false;" );
         }
     }
 
+    //check if two users are friends
     public Record isFriend(String user1, String user2) {
         Record res;
         try (Session session = driver.session()) {
@@ -172,6 +177,7 @@ public class UserDataAccess {
         return res;
     }
 
+    //get users friends
     public List<Record> returnUserFriends(String user) {
         List<Record> r = new ArrayList<>();
         try(Session session = driver.session()) {
@@ -185,12 +191,14 @@ public class UserDataAccess {
         return r;
     }
 
+    //Edit profile method
     public void editProfile(String user, String newuser, String newFirstName, String newSurname, String location, LocalDate dob) {
         try(Session session = driver.session()){
             session.run("Match (U:User{username: \'" +user+"\'}) set U.username=\'"+ newuser+ "\', U.firstname=\'" + newFirstName + "\', U.surname=\'" + newSurname + "\', U.location=\'" + location + "\', U.dob=date(\'" +dob+"\')");
         }
     }
 
+    //get users by their email method
     public Record getByEmail(String email) {
         Record rec;
         try(Session session = driver.session()){

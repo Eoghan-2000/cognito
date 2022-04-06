@@ -9,8 +9,7 @@ function EditProfile(){
     //Declare user from auth0
     const {user} = useAuth0();
     const navigate = useNavigate;
-    const currentUser = new CurrentUser(user.name);
-
+    const[current,setCurrent] = useState("");
     //useStates to allow for finding users friends, posts, list of posts in rendered format and new posts by the user
     const [userDetails,setUserDetails] = useState([]);
 
@@ -23,12 +22,13 @@ function EditProfile(){
     
     // sends the current user and the post that they submit
     const editProfile = e => {
-        UserService.editProfile(currentUser.username,userDetails.username,userDetails.firstname,userDetails.surname,userDetails.location, userDetails.dob)
+        UserService.editProfile(current,userDetails.username,userDetails.firstname,userDetails.surname,userDetails.location, userDetails.dob)
     };
 
     function getUser(){
         UserService.searchUserbyEmail(user.name).then((response) =>{
             setUserDetails(response.data);
+            setCurrent(response.data.username);
         });
     }
 

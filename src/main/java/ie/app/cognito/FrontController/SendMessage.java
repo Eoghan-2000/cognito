@@ -17,7 +17,7 @@ public class SendMessage {
 
         this.userService = userService;
     }
-    //calls the user service method to get notifications for a particular user
+    //calls the user service method to make post for a particular user
     @GetMapping
     public void makeUserPost(@PathVariable("userto")String userto,@PathVariable("userfrom")String userfrom,@PathVariable("message")String message){
         userService.sendMessage(userto,userfrom,message);

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useAuth0 } from '@auth0/auth0-react';
 import Neovis from "neovis.js/dist/neovis.js";
 
-const AllUserConnections = (props) => {
+const FriendsMap = (props) => {
   const {user} = useAuth0();
   //Declare props
   const {
@@ -17,13 +17,14 @@ const AllUserConnections = (props) => {
     neo4jUser,
     neo4jPassword,
     username1,
-    username2
   } = props;
 
   const visRef = useRef();
 
   //if one user is sent in instead of two, get all the friends users 
   useEffect(() => {
+    //if one user is sent in instead of two, get all the friends users 
+    if(username1){
     const config = {
       container_id: visRef.current.id,
       server_url: neo4jUri,
@@ -32,20 +33,20 @@ const AllUserConnections = (props) => {
       labels: {
         User: {
           caption: "username"
+          
         },
       },
       relationships: {
         "TRUSTS_EACHOTHER": {
           caption: true
       }
-      },//cypher query for degree of seperation in neo4j 
+      },//cypher query for all friends of current user 
       initial_cypher:
-      "match path=shortestPath((u1:User{username:\'"+username1+"\'})-[rel*..5]-(u2:User{email:\'"+user.name+"\'})) "
-      + "return path",
+        "MATCH (u:User {email:\'"+ user.name +"\'})-[rel]-(u2:User) RETURN *",
     };
     const vis = new Neovis(config);
-    vis.render();//render the graph visualisation
-}, [neo4jUri, neo4jUser, neo4jPassword]);
+    vis.render();
+}}, [neo4jUri, neo4jUser, neo4jPassword]);
 
   return (
     <div
@@ -60,13 +61,13 @@ const AllUserConnections = (props) => {
 };
 
 
-AllUserConnections.defaultProps = {
+FriendsMap.defaultProps = {
   width: 600,
   height: 600,
   backgroundColor: "#262626",
 };
 
-AllUserConnections.propTypes = {
+FriendsMap.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
   containerId: PropTypes.string.isRequired,
@@ -84,7 +85,7 @@ const ResponsiveNeoGraph = (props) => {
   return (
     <div style={{ position: "relative", color:"#262626" }}>
       {resizeListener}
-      <AllUserConnections {...neoGraphProps} />
+      <FriendsMap {...neoGraphProps} />
     </div>
   );
 };
@@ -101,4 +102,4 @@ ResponsiveNeoGraph.propTypes = {
   backgroundColor: PropTypes.string,
 };
 
-export { AllUserConnections, ResponsiveNeoGraph };
+export { FriendsMap, ResponsiveNeoGraph };

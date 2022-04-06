@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-//This is where the front end will call to receive the results from searching for a particular search
+//This is where the front end will call to receive the results from searching for a particular users email
 @RestController
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "*")
 @RequestMapping(value = "api/searchUserEmail/{email}", method = RequestMethod.GET)
 public class SearchByEmail {
     private final UserService userService;
@@ -23,7 +22,7 @@ public class SearchByEmail {
     public SearchByEmail(UserService userService) {
         this.userService = userService;
     }
-    //calls the user service method to search the database for a particular user
+    //calls the user service method to search the database for a particular user given their email
     @GetMapping
     public User searchEmail(@PathVariable("email")String email){
         return userService.userSearchbyEmail(email);

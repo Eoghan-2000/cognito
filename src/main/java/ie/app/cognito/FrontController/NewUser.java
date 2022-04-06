@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ie.app.cognito.Service.UserService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins ="*")
 @RequestMapping(path = "api/newuser/{username}", method = RequestMethod.POST)
 public class NewUser {
     private final UserService userService;

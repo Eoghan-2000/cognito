@@ -6,6 +6,7 @@ import {useNavigate} from 'react-router-dom';
 import {AllUserConnections } from './AllUserConnections';
 import {useLocation} from 'react-router-dom';
 import {CurrentUser} from '../business/CurrentUser';
+import { FriendsMap } from './FriendsMap';
 
 function Profile (props) {
     let navigate = useNavigate(); 
@@ -20,7 +21,7 @@ function Profile (props) {
 
     //decalairing variables needef for profile
     const {user} = useAuth0();
-    const currentUser = new CurrentUser(user.name);
+    const[current,setCurrent] = useState([]);
     const [userData, setUserData] = useState([]);
     const [dosData, setDosData] = useState([]);
     const [isAFriend, setIsFriend] = useState(false);
@@ -28,32 +29,31 @@ function Profile (props) {
     const { search } =  location.state;
     //if search prob is equal to the user that is currently logged in they clicked to view their own profile so set username to current user,
     //else set it to the user they are viewing
-    const username = (search === currentUser.username) ?  currentUser.username : search;
     //useStates to allow for finding users friends, posts, list of posts in rendered format and new posts by the user
     
     //Get get users on load
     useEffect(() =>{
+        getCurrentUser()
         getUser();
-        getDOS();
-    },[search]);
+    },[]);
+    
+    function getCurrentUser(){
+        UserService.searchUserbyEmail(user.name).then((response) =>{
+          setCurrent(response.data)
+          getDOS(response.data);
+        });
+    }
 
     //get users from user service and set the response to the profile data
     function getUser(){
-        if(search.includes("@")){
-            UserService.searchUserbyEmail(search).then((response) => {
-                setUserData(response.data)
-            })
-        }else{
         UserService.searchUsers(search).then((response) =>{
             setUserData(response.data)
         });
-        }
     }
 
-    function getDOS(){
-        if(search !== currentUser.username){
-        UserService.getDos(search,currentUser.username).then((response) =>{
-            console.log(response.data)
+    function getDOS(current){
+        if(search !== current.username){
+        UserService.getDos(search,current.username).then((response) =>{
             setDosData(response.data);
         });
         }
@@ -68,19 +68,19 @@ function Profile (props) {
     //Check for which button is pressed
     const handleClick=(e)=>{
     if(e.target.value === "flag"){
-        UserService.flagUser(username);
+        UserService.flagUser(userData.username);
     }else if(e.target.value ==="unflag"){
-        UserService.unFlagUser(username);
+        UserService.unFlagUser(userData.username);
     }else if(e.target.value ==="untrust"){
-        UserService.removeTrust(username,currentUser.username);
+        UserService.removeTrust(userData.username,current.username);
     }else if(e.target.value === "sendTrust"){
-        UserService.sendTrust(username,currentUser.username);
+        UserService.sendTrust(userData.username,userData.username);
     }
     }
 
     if(userData){
         //if the user profile is the user thats logged in
-        if(username === currentUser.username){
+        if(search === current.username){
             return(
                 <div class="float-container">
                 <div class="float-child">
@@ -107,7 +107,7 @@ function Profile (props) {
                 <div class="float-child">
                     <div class="blue">
                         <h2>Friends Map</h2>
-                        <AllUserConnections
+                        <FriendsMap
                         width={400}
                         height={'80vh'}
                         containerId={"id1"}
@@ -115,14 +115,13 @@ function Profile (props) {
                         neo4jUser={NEO4J_USER}
                         neo4jPassword={NEO4J_PASSWORD}
                         backgroundColor={"#262626"}
-                        username1={username}
-                        username2={""}/>
+                        username1={user.name}/>
                     </div>
                 </div>
                 </div>
-            );}else{
+            );}else if(current.size != 0){
                 //if its not the profile of the user logged in this is what is displayed
-                isFriend(currentUser.username,username);
+                isFriend(userData.username,current.username);
                 return(
                     <div class="float-container">
                     <div class="float-child">
@@ -167,8 +166,8 @@ function Profile (props) {
                             neo4jUser={NEO4J_USER}
                             neo4jPassword={NEO4J_PASSWORD}
                             backgroundColor={"#262626"}
-                            username1={username}
-                            username2={currentUser.username}
+                            username1={search}
+                            username2={current.username}
                             />
                         </div>
                     </div>

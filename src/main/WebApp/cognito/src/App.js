@@ -12,6 +12,7 @@ import Messages from './components/Messages';
 import SearchResultsPage from './components/SearchResultsPage';
 import LoginButton from './components/LoginButton';
 import EditProfile from './components/EditProfile';
+import Help from './components/Help';
 
 //App will always have a header footer and div container inbetween
 //Sets a standard page throughout and the navigation bar will control what content is shown to the user
@@ -46,6 +47,7 @@ const App= () => {
                   <Route path="/searchresults" exact element={<SearchResultsPage search/>}/>
                   <Route path="/spamcluster" exact element={<SpamCluster/>}/>
                   <Route path="/editprofile" exact element={<EditProfile/>}/>
+                  <Route path="/help" exact element={<Help/>}/>
               </Routes>
               </div>
             </Col>

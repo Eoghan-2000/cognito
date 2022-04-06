@@ -28,4 +28,14 @@ public interface SqlRepository extends CrudRepository<UserNotifications,Long>{
 
     @Query(value = "Select user2 from user_notifications where user2 in :s and status=\'rejected\' group by user2 having count(*) > 6", nativeQuery = true)
     List<String> getSusNotifications(List<String> s);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update user_notifications set user1 = ?2 where user1 = ?1", nativeQuery = true)
+    void editUserName1(String user, String newuser);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update user_notifications set user2 = ?2 where user2 = ?1", nativeQuery = true)
+    void editUserName2(String user, String newuser);
 }

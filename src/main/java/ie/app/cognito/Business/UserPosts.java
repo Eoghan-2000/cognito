@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Index;
+
 @Entity
  public class UserPosts {
      @Id

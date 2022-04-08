@@ -86,12 +86,12 @@ public class UserService {
             }
         }
         List<String> postSpamList = spamCluster2(firstList);
-        List<String> messageSpamList = spamCluster3(firstList);
+        List<String> notificationSpamList = spamCluster3(firstList);
 
         for(String s : postSpamList){
             set.add(s);
         }
-        for(String s : messageSpamList){
+        for(String s : notificationSpamList){
             set.add(s);
         }
         firstList = new ArrayList<>(set);

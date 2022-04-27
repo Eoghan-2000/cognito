@@ -22,7 +22,8 @@ public class SendTrustRequest{
     }
     //calls the user service method to send trust to a particular user
     @GetMapping
-    public void sendTrust(@PathVariable("username1")String username1, @PathVariable("username2") String username2){
+    public String sendTrust(@PathVariable("username1")String username1, @PathVariable("username2") String username2){
         userService.sendTrust(username1,username2);
+        return "Success";
     }
 }

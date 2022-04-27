@@ -12,6 +12,7 @@ import {CurrentUser} from '../business/CurrentUser';
 //Nav bar for user navigation
 const NavigationBar = () =>{
   //Declare current user logged in, search value and notification values
+  const delay = ms => new Promise(res => setTimeout(res, ms));
   const {isAuthenticated,user} = useAuth0();
   const [value, setValue] = useState("");
   const [slider, setSlider] = useState(100);
@@ -20,6 +21,7 @@ const NavigationBar = () =>{
   // const currentUser = new CurrentUser(user.name);
   const [userNotifications, setUserNotifications] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
+  const [buttonPressed, setButtonPressed] = useState(false);
   
   //Update value everytime user types to enable search
   const handleChange = e => {
@@ -28,8 +30,10 @@ const NavigationBar = () =>{
 
   //return a function for each button on notification
   function getAcceptRequest(username,n,sliderval,type){
-    return function(){
+    return async function(){
       UserService.acceptReq(username, n,(sliderval+'/'+type));
+      await delay(2000);
+      setButtonPressed(!buttonPressed);
     }
   }
   function denyRequest(username,n){
@@ -62,7 +66,7 @@ const NavigationBar = () =>{
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"></link>
       <img className="navicon" src="AppLogo.png" width="25" height="25" alt="brand"/>
       <NavDropdown className="navbar-brand" title="Cognito" id="navbarScrollingDropdown">
-        <NavDropdown.Item href={"home"}>Home</NavDropdown.Item>
+        <NavDropdown.Item href={"/"}>Home</NavDropdown.Item>
         <NavDropdown.Item href={"messages"}>Messages</NavDropdown.Item>
         <NavDropdown.Item href={"settings"}>Settings</NavDropdown.Item>
         {/* below is the difference between normal user and admin on nav bar, allows them to run spam cluster algorithm */}
@@ -114,7 +118,7 @@ const NavigationBar = () =>{
       <img class="navicon" src="AppLogo.png" width="25" height="25" alt="brand"/>
       <NavDropdown className="navbar-brand" title="Cognito" id="navbarScrollingDropdown">
       {/* nav items for drop down */}
-        <NavDropdown.Item href={"home"}>Home</NavDropdown.Item>
+        <NavDropdown.Item href={"/"}>Home</NavDropdown.Item>
         <NavDropdown.Item href={"messages"}>Messages</NavDropdown.Item>
         <NavDropdown.Item href={"settings"}>Settings</NavDropdown.Item>
         <NavDropdown.Item href={"help"}>Help</NavDropdown.Item>

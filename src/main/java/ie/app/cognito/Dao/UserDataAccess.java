@@ -208,4 +208,11 @@ public class UserDataAccess {
         }
         return rec;
     }
+
+    public void adjustTrust(String username1, String username2, int trust, String type) {
+        try(Session session = driver.session()){
+            session.run("Match (U:User{username:\'"+ username1 +"\'})-[rel]-(U2:User{username:\'" + username2 + "\'}) set rel.trustLevel ="+trust +";" );
+            session.run("Match (U:User{username:\'"+ username1 +"\'})-[rel]-(U2:User{username:\'" + username2 + "\'}) CALL apoc.refactor.setType(rel, \'"+ type+"\') YIELD input, output RETURN input, output;" );
+        }
+    }
 }

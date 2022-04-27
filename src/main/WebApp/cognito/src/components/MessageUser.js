@@ -8,16 +8,17 @@ function MessageUser(props){
     const[messages, setMessages] = useState([]);
     const[newMessage,setNewMessage]= useState("");
     const clicked = props.userClicked;    
-    
+    const delay = ms => new Promise(res => setTimeout(res, ms));
     //When the user types in the text box the value is changed to their input
     const handleChange = e => {
         setNewMessage(e.target.value)
       };
     
     function sendMessage(userfrom, userto){
-        return function(){
+        return async function(){
         UserService.sendUserMessage(userfrom, userto, newMessage)
         setNewMessage("")
+        await delay(1000);
         setUserMessages()
         }
       };

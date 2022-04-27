@@ -203,4 +203,9 @@ public class UserService {
         }
         return u;
     }
+
+
+    public void AdjustTrust(String username1, String username2, int trust, String type) {
+        userAccess.adjustTrust(username1,username2, trust,type);
+    }
 }

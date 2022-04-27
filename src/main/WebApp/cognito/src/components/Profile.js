@@ -1,5 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import {ButtonGroup,Button,Card,ListGroup,ListGroupItem} from 'react-bootstrap';
+import {ButtonGroup,Button,Card,ListGroup,ListGroupItem, Dropdown} from 'react-bootstrap';
 import UserService from '../services/UserService';
 import React, { useState, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
@@ -18,6 +18,7 @@ function Profile (props) {
     const NEO4J_URI = "bolt://localhost:7687";
     const NEO4J_USER = "neo4j";
     const NEO4J_PASSWORD = "password";
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
     //decalairing variables needef for profile
     const {user} = useAuth0();
@@ -25,6 +26,9 @@ function Profile (props) {
     const [userData, setUserData] = useState([]);
     const [dosData, setDosData] = useState([]);
     const [isAFriend, setIsFriend] = useState(false);
+    const [trustType, setTrustType] = useState("");
+    const [slider, setSlider] = useState(100);
+    const [buttonPressed, setButtonPressed]= useState(false);
     const location = useLocation();
     const { search } =  location.state;
     //if search prob is equal to the user that is currently logged in they clicked to view their own profile so set username to current user,
@@ -66,15 +70,27 @@ function Profile (props) {
           });
     }
     //Check for which button is pressed
-    const handleClick=(e)=>{
+    const handleClick = async (e)=>{
     if(e.target.value === "flag"){
-        UserService.flagUser(userData.username);
+        UserService.flagUser(search);
+        await delay(2000);
+        setButtonPressed(!buttonPressed);
     }else if(e.target.value ==="unflag"){
-        UserService.unFlagUser(userData.username);
+        UserService.unFlagUser(search);
+        await delay(2000);
+        setButtonPressed(!buttonPressed);
     }else if(e.target.value ==="untrust"){
-        UserService.removeTrust(userData.username,current.username);
+        UserService.removeTrust(search,current.username);
+        await delay(2000);
+        setButtonPressed(!buttonPressed);
     }else if(e.target.value === "sendTrust"){
-        UserService.sendTrust(userData.username,userData.username);
+        UserService.sendTrust(search,current.username);
+        await delay(2000);
+        setButtonPressed(!buttonPressed);
+    }else if(e.target.value === "confirmAdjust"){
+        UserService.adjustTrust(search,current.username,slider,trustType);
+        await delay(2000);
+        setButtonPressed(!buttonPressed);
     }
     }
 
@@ -121,7 +137,7 @@ function Profile (props) {
                 </div>
             );}else if(current.size != 0){
                 //if its not the profile of the user logged in this is what is displayed
-                isFriend(userData.username,current.username);
+                isFriend(search,current.username);
                 return(
                     <div class="float-container">
                     <div class="float-child">
@@ -148,7 +164,19 @@ function Profile (props) {
                             <Button value="unflag" variant="success">Unflag</Button>
                         }
                         {/* untrust if they are friends, send request if not */}
-                        {(isAFriend) ? <Button value="untrust">Untrust</Button> : <Button value="sendTrust">Send Trust Request</Button>}
+                        {(isAFriend) ?<> 
+                        <Button value="untrust">Untrust</Button>
+                        <Dropdown>
+                        <Dropdown.Toggle id="dropdown-autoclose-true">Edit Trust</Dropdown.Toggle>
+                            <Dropdown.Menu>
+                            Relationship Type:
+                            <input type="text" id="trusttype" name="trusttype" value={trustType} onChange={(event) => setTrustType(event.target.value)}></input>
+                            Trust Level:
+                            <input type="range" id="trust" name="trust" value={slider} onChange={(event) => setSlider(event.target.value)} min="0" max="100"></input>
+                            <Button value="confirmAdjust">Confirm</Button>
+                            </Dropdown.Menu>
+                        </Dropdown> 
+                        </> : <Button value="sendTrust">Send Trust Request</Button>}
                         </ButtonGroup>
                         </Card.Body>
                         <br/>

@@ -15,7 +15,7 @@ const SearchResultsPage = (props) => {
         UserService.searchUsers(search).then((response) =>{
             setUserData(response.data)
         });
-    },[]);
+    },[search]);
     //sets result to mapped renderable react code for search results
     if(userData){
         const listofusers = userData.map((u) =>

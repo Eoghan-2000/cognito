@@ -78,6 +78,10 @@ class UserService{
     editProfile(currentUser, username,firstname,surname,location,dob){
         axios.post(USERS_SERVICE_API_URL + 'editprofile' + '/' + currentUser + '/' + username + '/' + firstname + '/' + surname + '/' + location + '/' + dob);
     }
+
+    adjustTrust(user1,user2,sliderval,type){
+        axios.post(USERS_SERVICE_API_URL + 'adjusttrust' +  '/' + user1 + '/' + user2 + '/' + sliderval + '/' + type);
+    }
 }
 
 export default new UserService();

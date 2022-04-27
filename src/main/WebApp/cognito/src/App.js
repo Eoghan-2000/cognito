@@ -41,7 +41,7 @@ const App= () => {
               {/* The different navigations for going through the web application using routes */}
                 <Routes>      
                   <Route path="/spamcluster" exact element={<SpamCluster/>}/>
-                  <Route path="/home" exact element={<Home/>}/>
+                  <Route path="/" exact element={<Home/>}/>
                   <Route path="/messages" exact element={<Messages/>}/>
                   <Route path="/profile" exact element={<Profile/>}/>
                   <Route path="/searchresults" exact element={<SearchResultsPage search/>}/>
